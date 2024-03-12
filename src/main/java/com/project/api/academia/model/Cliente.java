@@ -1,5 +1,7 @@
 package com.project.api.academia.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.project.api.academia.enuns.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +23,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "clientes")
+@JsonIgnoreProperties({"enderecos"})
 public class Cliente implements Serializable {
 
     @Id
@@ -38,8 +42,9 @@ public class Cliente implements Serializable {
     @Column(nullable = false, length = 300)
     private String observacao;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(nullable = false)
-    private LocalDateTime dataDeNascimento;
+    private LocalDate dataDeNascimento;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -68,12 +73,6 @@ public class Cliente implements Serializable {
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Endereco> enderecos = new ArrayList<>();
-
-    @Transient
-    private Double IMC;
-    public void calcularIMC() {
-        this.IMC = this.peso / (this.altura * this.altura);
-    }
 
     @Override
     public boolean equals(Object o) {

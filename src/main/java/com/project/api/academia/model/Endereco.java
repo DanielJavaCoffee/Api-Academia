@@ -20,8 +20,7 @@ public class Endereco implements Serializable {
     private Long id;
 
     @Column(nullable = false)
-    private String rua;
-
+    private String logradouro;
     @Column(nullable = false)
     private String numero;
 

@@ -6,7 +6,11 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.hibernate.validator.constraints.br.CPF;
+import com.project.api.academia.model.Endereco;
+
+import java.time.LocalDate;
+import java.util.List;
+
 
 public record CriarClienteDto(
 
@@ -19,6 +23,12 @@ public record CriarClienteDto(
         @NotBlank
         String numeroDeTelefone,
 
+        @NotBlank
+        String observacao,
+
+        @NotNull
+        LocalDate dataDeNascimento,
+
         @Enumerated
         Role role,
 
@@ -26,7 +36,9 @@ public record CriarClienteDto(
         Double peso,
 
         @NotNull
-        Double altura
+        Double altura,
+
+        List<Endereco> enderecos
 ) {
 
 }
