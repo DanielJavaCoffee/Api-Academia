@@ -35,6 +35,12 @@ public class Cliente implements Serializable {
     @Column(nullable = false, unique = true)
     private String numeroDeTelefone;
 
+    @Column(nullable = false, length = 300)
+    private String observacao;
+
+    @Column(nullable = false)
+    private LocalDateTime dataDeNascimento;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
