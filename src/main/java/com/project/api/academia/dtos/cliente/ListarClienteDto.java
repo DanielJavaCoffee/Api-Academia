@@ -9,7 +9,7 @@ import com.project.api.academia.model.Endereco;
 import java.time.LocalDate;
 import java.util.List;
 
-public record ClienteListDto(
+public record ListarClienteDto(
         String nomeCompleto,
         String email,
         String telefone,
@@ -20,11 +20,11 @@ public record ClienteListDto(
         Double altura,
         List<Endereco> enderecos
 ) {
-    public ClienteListDto(Cliente cliente) {
+    public ListarClienteDto(Cliente cliente) {
         this(
                 cliente.getNomeCompleto(),
                 cliente.getEmail(),
-                cliente.getNumeroDeTelefone(),
+                cliente.getTelefone(),
                 cliente.getObservacao(),
                 cliente.getDataDeNascimento(),
                 cliente.getRole(),
