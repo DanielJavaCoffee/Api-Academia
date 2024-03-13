@@ -1,5 +1,6 @@
 package com.project.api.academia.service;
 
+import com.project.api.academia.dtos.cliente.ClienteListDto;
 import com.project.api.academia.dtos.cliente.CriarClienteDto;
 import com.project.api.academia.model.Cliente;
 import com.project.api.academia.model.Endereco;
@@ -10,13 +11,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
-
-    private final EnderecoRepository enderecoRepository;
 
     @Transactional
     public CriarClienteDto salvarCliente(CriarClienteDto criarClienteDto) {
@@ -30,6 +31,16 @@ public class ClienteService {
         }
         clienteRepository.save(cliente);
         return criarClienteDto;
+    }
+
+    @Transactional(readOnly = true)
+    public ClienteListDto findByID(Long id){
+        Optional<Cliente> clienteOptional = clienteRepository.findById(id);
+        if(clienteOptional.isPresent()){
+            var cliente  = new ClienteListDto(clienteOptional.get());
+            return cliente;
+        }
+        throw new RuntimeException("Usuario não encontrado!");
     }
 
 }
