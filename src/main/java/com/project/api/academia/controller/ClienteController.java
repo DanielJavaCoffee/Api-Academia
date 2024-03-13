@@ -1,11 +1,11 @@
 package com.project.api.academia.controller;
 
+import com.project.api.academia.dtos.cliente.ClienteListDto;
 import com.project.api.academia.dtos.cliente.CriarClienteDto;
 import com.project.api.academia.service.ClienteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,5 +20,10 @@ public class ClienteController {
     public ResponseEntity<CriarClienteDto> salvarCliente(@RequestBody @Valid CriarClienteDto criarClienteDto){
         var cliente = clienteService.salvarCliente(criarClienteDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(cliente);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ClienteListDto> buscarCliente(@PathVariable @Valid Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(clienteService.findByID(id));
     }
 }
