@@ -13,8 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,12 +22,11 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "clientes")
-@JsonIgnoreProperties({"enderecos"})
 public class Cliente implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     @Column(nullable = false)
     private String nomeCompleto;
@@ -71,8 +69,9 @@ public class Cliente implements Serializable {
     @Column(name = "modificado_por")
     private String modificadoPor;
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Endereco> enderecos = new ArrayList<>();
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "endereco_id", referencedColumnName = "id")
+    private Endereco endereco;
 
     @Override
     public boolean equals(Object o) {

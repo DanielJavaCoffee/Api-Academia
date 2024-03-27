@@ -12,10 +12,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record AtualizarClienteDto(
-
-        @NotNull
-        Long id,
-
         @NotBlank
         @Size(min = 10, max = 100)
         String nomeCompleto,
@@ -38,9 +34,6 @@ public record AtualizarClienteDto(
         Double peso,
 
         @NotNull
-        Double altura,
-
-        @NotNull
-        List<Endereco> enderecos
+        Double altura
 ){
 }

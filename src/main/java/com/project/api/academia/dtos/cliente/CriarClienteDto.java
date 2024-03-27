@@ -37,7 +37,7 @@ public record CriarClienteDto(
         Double altura,
 
         @NotNull
-        List<Endereco> enderecos
+        Endereco enderecos
 ) {
 
 }

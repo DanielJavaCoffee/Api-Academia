@@ -13,24 +13,26 @@ public record ListarClienteDto(
         String nomeCompleto,
         String email,
         String telefone,
+        Boolean isAtivo,
         String observacao,
         LocalDate dataDeNascimento,
         Role role,
         Double peso,
         Double altura,
-        List<Endereco> enderecos
+        Endereco enderecos
 ) {
     public ListarClienteDto(Cliente cliente) {
         this(
                 cliente.getNomeCompleto(),
                 cliente.getEmail(),
                 cliente.getTelefone(),
+                cliente.getIsAtivo(),
                 cliente.getObservacao(),
                 cliente.getDataDeNascimento(),
                 cliente.getRole(),
                 cliente.getPeso(),
                 cliente.getAltura(),
-                cliente.getEnderecos()
+                cliente.getEndereco()
         );
     }
 }

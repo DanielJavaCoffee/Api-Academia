@@ -1,7 +1,5 @@
 package com.project.api.academia.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.UUID;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -18,8 +18,8 @@ import java.io.Serializable;
 public class Endereco implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     @Column(nullable = false)
     private String logradouro;
@@ -32,8 +32,4 @@ public class Endereco implements Serializable {
     @Column(nullable = false)
     private String cidade;
 
-    @ManyToOne
-    @JoinColumn(name = "cliente_id", nullable = false)
-    @JsonIgnore
-    private Cliente cliente;
 }
