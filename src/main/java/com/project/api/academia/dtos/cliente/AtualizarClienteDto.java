@@ -1,15 +1,15 @@
 package com.project.api.academia.dtos.cliente;
 
-import com.project.api.academia.enuns.Role;
-import com.project.api.academia.model.Endereco;
+
+import com.project.api.academia.model.Cliente;
+
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
 import java.time.LocalDate;
-import java.util.List;
+
 
 public record AtualizarClienteDto(
         @NotBlank
@@ -28,7 +28,7 @@ public record AtualizarClienteDto(
         LocalDate dataDeNascimento,
 
         @Enumerated
-        Role role,
+        Cliente.Role role,
 
         @NotNull
         Double peso,

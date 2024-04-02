@@ -2,12 +2,8 @@ package com.project.api.academia.dtos.cliente;
 
 
 import com.project.api.academia.model.Cliente;
-
-import com.project.api.academia.enuns.Role;
 import com.project.api.academia.model.Endereco;
-
 import java.time.LocalDate;
-import java.util.List;
 
 public record ListarClienteDto(
         String nomeCompleto,
@@ -16,7 +12,7 @@ public record ListarClienteDto(
         Boolean isAtivo,
         String observacao,
         LocalDate dataDeNascimento,
-        Role role,
+        Cliente.Role role,
         Double peso,
         Double altura,
         Endereco enderecos

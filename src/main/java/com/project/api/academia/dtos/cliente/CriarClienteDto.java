@@ -1,12 +1,12 @@
 package com.project.api.academia.dtos.cliente;
 
-import com.project.api.academia.enuns.Role;
+import com.project.api.academia.model.Cliente;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 import com.project.api.academia.model.Endereco;
 
 import java.time.LocalDate;
-import java.util.List;
+
 
 
 public record CriarClienteDto(
@@ -22,13 +22,17 @@ public record CriarClienteDto(
         String telefone,
 
         @NotBlank
+        @Size(min = 6, max = 10)
+        String password,
+
+        @NotBlank
         String observacao,
 
         @NotNull
         LocalDate dataDeNascimento,
 
         @Enumerated
-        Role role,
+        Cliente.Role role,
 
         @NotNull
         Double peso,

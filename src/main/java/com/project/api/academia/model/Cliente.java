@@ -1,8 +1,7 @@
 package com.project.api.academia.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.project.api.academia.enuns.Role;
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -37,15 +36,15 @@ public class Cliente implements Serializable {
     @Column(nullable = false, unique = true)
     private String telefone;
 
+    @Column(nullable = false)
+    private String password;
+
     @Column(nullable = false, length = 300)
     private String observacao;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(nullable = false)
     private LocalDate dataDeNascimento;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
 
     @Builder.Default
     @Column(nullable = false)
@@ -56,6 +55,9 @@ public class Cliente implements Serializable {
     @Column(nullable = false)
     private Double altura;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false, length = 25)
+    private Role role = Role.ROLE_CLIENTE;
     @CreatedDate
     @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;
@@ -72,6 +74,12 @@ public class Cliente implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
     private Endereco endereco;
+
+
+    public enum Role {
+        ROLE_ADMIN,
+        ROLE_CLIENTE
+    }
 
     @Override
     public boolean equals(Object o) {

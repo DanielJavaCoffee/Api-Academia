@@ -4,25 +4,30 @@ import com.project.api.academia.dtos.cliente.AtualizarClienteDto;
 import com.project.api.academia.dtos.cliente.ListarClienteDto;
 import com.project.api.academia.dtos.cliente.CriarClienteDto;
 import com.project.api.academia.exception.ClienteNotFound;
-import com.project.api.academia.exception.ClienteUniqueViolationException;
 import com.project.api.academia.model.Cliente;
 import com.project.api.academia.repository.ClienteRepository;
 import com.project.api.academia.repository.EnderecoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
 public class ClienteService {
+
+    private final PasswordEncoder passwordEncoder;
     private final ClienteRepository clienteRepository;
     private final EnderecoRepository enderecoRepository;
 
@@ -34,10 +39,11 @@ public class ClienteService {
            BeanUtils.copyProperties(criarClienteDto, cliente);
            enderecoRepository.save(endereco);
            cliente.setEndereco(endereco);
+           cliente.setPassword(passwordEncoder.encode(cliente.getPassword()));
            clienteRepository.save(cliente);
            return criarClienteDto;
        } catch (DataIntegrityViolationException exception){
-           throw new ClienteUniqueViolationException("Já existe um cliente cadastrado. " + exception.getMessage());
+           throw new DataIntegrityViolationException(exception.getMessage());
        }
     }
 
@@ -57,11 +63,15 @@ public class ClienteService {
     }
 
     @Transactional(readOnly = true)
-    public ListarClienteDto findByID(Long id){
+    public ListarClienteDto findByID(UUID id){
         Optional<Cliente> clienteOptional = clienteRepository.findById(id);
-        if(clienteOptional.isPresent()){
-            var cliente  = new ListarClienteDto(clienteOptional.get());
-            return cliente;
+        try {
+            if(clienteOptional.isPresent()){
+                var cliente  = new ListarClienteDto(clienteOptional.get());
+                return cliente;
+            }
+        }catch (InvalidDataAccessApiUsageException exception){
+            throw new InvalidDataAccessApiUsageException("Formato do Id inválido");
         }
         throw new ClienteNotFound("Cliente não encontrado.");
     }
@@ -109,5 +119,17 @@ public class ClienteService {
     public void deletarCliente(String email){
         Optional<Cliente> clienteOptional = Optional.ofNullable(clienteRepository.findByEmail(email)).orElseThrow(() -> new ClienteNotFound("Cliente não encontrado"));
         clienteRepository.delete(clienteOptional.get());
+    }
+
+    @Transactional(readOnly = true)
+    public Cliente buscarPorUsername(String email) {
+        return clienteRepository.findByEmail(email).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Usuario com '%s' não encontrado", email))
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public Cliente.Role buscarRolePorUsername(String username) {
+        return clienteRepository.findRoleByUsername(username);
     }
 }
