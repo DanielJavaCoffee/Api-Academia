@@ -5,6 +5,7 @@ import com.project.api.academia.dtos.cliente.ListarClienteDto;
 import com.project.api.academia.dtos.cliente.CriarClienteDto;
 import com.project.api.academia.exception.ClienteNotFound;
 import com.project.api.academia.model.Cliente;
+import com.project.api.academia.producer.ClienteModelProducer;
 import com.project.api.academia.repository.ClienteRepository;
 import com.project.api.academia.repository.EnderecoRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,6 +28,8 @@ import java.util.UUID;
 @Slf4j
 public class ClienteService {
 
+    private final ClienteModelProducer clienteModelProducer;
+
     private final PasswordEncoder passwordEncoder;
     private final ClienteRepository clienteRepository;
     private final EnderecoRepository enderecoRepository;
@@ -41,6 +44,7 @@ public class ClienteService {
            cliente.setEndereco(endereco);
            cliente.setPassword(passwordEncoder.encode(cliente.getPassword()));
            clienteRepository.save(cliente);
+           clienteModelProducer.publishMessagenEmail(cliente);
            return criarClienteDto;
        } catch (DataIntegrityViolationException exception){
            throw new DataIntegrityViolationException(exception.getMessage());
@@ -79,7 +83,7 @@ public class ClienteService {
     @Transactional
     public AtualizarClienteDto atualizarCliente(AtualizarClienteDto atualizarClienteDto){
 
-        Optional<Cliente> clienteOptional = Optional.ofNullable(clienteRepository.findByEmail(atualizarClienteDto.email()).orElseThrow(() -> new ClienteNotFound("Cliente não encontrado.")));
+        Optional<Cliente> clienteOptional = Optional.ofNullable(clienteRepository.findById(atualizarClienteDto.id()).orElseThrow(() -> new ClienteNotFound("Cliente não encontrado.")));
         var cliente = clienteOptional.get();
         BeanUtils.copyProperties(atualizarClienteDto, cliente);
         clienteRepository.save(cliente);

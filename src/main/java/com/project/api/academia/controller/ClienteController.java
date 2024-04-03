@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,9 +51,12 @@ public class ClienteController {
     @Operation(summary = "Listar todos os clientes.", description = "Recurso para listar todos os clientes.",
             responses = {
             @ApiResponse( responseCode = "200", description = "Recurso acessado com sucesso.",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ListarClienteDto.class)))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ListarClienteDto.class))),
+            @ApiResponse(responseCode = "403", description = "Usuário sem permissão para acessar este recurso.",
+                    content = @Content(mediaType = "application/json", schema = @Schema (implementation = ErrorMessage.class)))
             }
     )
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<ListarClienteDto>> listarClientes(){
         return ResponseEntity.status(HttpStatus.OK).body(clienteService.getAll());
@@ -61,16 +65,17 @@ public class ClienteController {
     @Operation(summary = "Buscar Cliente por id.", description = "Recurso para busca de cliente por id.",
             responses = {
             @ApiResponse(responseCode = "200", description = "Recurso acessado com sucesso.",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ListarClienteDto.class))
-            ),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ListarClienteDto.class))),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClienteNotFound.class))
-            ),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClienteNotFound.class))),
             @ApiResponse(responseCode = "400", description = "Solicitação inválida.",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
+            @ApiResponse(responseCode = "403", description = "Usuário sem permissão para acessar este recurso.",
+                    content = @Content(mediaType = "application/json", schema = @Schema (implementation = ErrorMessage.class)))
             }
     )
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') OR ( hasRole('CLIENTE') AND #id == authentication.principal.id)")
     public ResponseEntity<ListarClienteDto> buscarCliente(@PathVariable @Valid UUID id){
         return ResponseEntity.status(HttpStatus.OK).body(clienteService.findByID(id));
     }
@@ -78,9 +83,12 @@ public class ClienteController {
     @Operation(summary = "Listar todos os clientes ativos.", description = "Recurso para listar todos os clientes ativos.",
             responses = {
                     @ApiResponse( responseCode = "200", description = "Recurso acessado com sucesso.",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ListarClienteDto.class)))
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ListarClienteDto.class))),
+                    @ApiResponse(responseCode = "403", description = "Usuário sem permissão para acessar este recurso.",
+                            content = @Content(mediaType = "application/json", schema = @Schema (implementation = ErrorMessage.class)))
             }
     )
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/ativos")
     public ResponseEntity<List<ListarClienteDto>> listarTodosOsClientesAtivos(){
         return ResponseEntity.status(HttpStatus.OK).body(clienteService.listarTodosOsClientesAtivos());
@@ -89,9 +97,12 @@ public class ClienteController {
     @Operation(summary = "Listar todos os clientes desativados.", description = "Recurso para listar todos os clientes desativados.",
             responses = {
                     @ApiResponse( responseCode = "200", description = "Recurso acessado com sucesso.",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ListarClienteDto.class)))
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ListarClienteDto.class))),
+                    @ApiResponse(responseCode = "403", description = "Usuário sem permissão para acessar este recurso.",
+                            content = @Content(mediaType = "application/json", schema = @Schema (implementation = ErrorMessage.class)))
             }
     )
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/desativados")
     public ResponseEntity<List<ListarClienteDto>> listarTodosOsClientesDesativados(){
         return ResponseEntity.status(HttpStatus.OK).body(clienteService.listarTodosOsClientesDesativados());
@@ -104,8 +115,11 @@ public class ClienteController {
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado.",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClienteNotFound.class))),
             @ApiResponse(responseCode = "422", description = "Dados de entradas inválidos.",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
+            @ApiResponse(responseCode = "403", description = "Usuário sem permissão para acessar este recurso.",
+                    content = @Content(mediaType = "application/json", schema = @Schema (implementation = ErrorMessage.class)))
     })
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENTE') AND (#atualizarClienteDto.id == authentication.principal.id)")
     @PutMapping()
     public ResponseEntity<AtualizarClienteDto> atualizarCliente(@RequestBody @Valid AtualizarClienteDto atualizarClienteDto){
         var cliente = clienteService.atualizarCliente(atualizarClienteDto);
@@ -117,8 +131,11 @@ public class ClienteController {
                     @ApiResponse(responseCode = "200", description = "Recurso realizado com sucesso.",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = AtualizarClienteDto.class))),
                     @ApiResponse(responseCode = "404", description = "Cliente não encontrado.",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClienteNotFound.class)))
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClienteNotFound.class))),
+                    @ApiResponse(responseCode = "403", description = "Usuário sem permissão para acessar este recurso.",
+                            content = @Content(mediaType = "application/json", schema = @Schema (implementation = ErrorMessage.class)))
             })
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/desativar")
     public ResponseEntity<Void> desativarCliente(@RequestBody @Valid StringCliente stringCliente){
         clienteService.desativarCliente(stringCliente.email());
@@ -130,8 +147,11 @@ public class ClienteController {
                     @ApiResponse(responseCode = "200", description = "Recurso realizado com sucesso.",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = AtualizarClienteDto.class))),
                     @ApiResponse(responseCode = "404", description = "Cliente não encontrado.",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClienteNotFound.class)))
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClienteNotFound.class))),
+                    @ApiResponse(responseCode = "403", description = "Usuário sem permissão para acessar este recurso.",
+                            content = @Content(mediaType = "application/json", schema = @Schema (implementation = ErrorMessage.class)))
             })
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/ativar")
     public ResponseEntity<Void> ativarCliente(@RequestBody @Valid StringCliente stringCliente){
         clienteService.AtivarCliente(stringCliente.email());
@@ -143,8 +163,11 @@ public class ClienteController {
                     @ApiResponse(responseCode = "200", description = "Recurso realizado com sucesso.",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = AtualizarClienteDto.class))),
                     @ApiResponse(responseCode = "404", description = "Cliente não encontrado.",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClienteNotFound.class)))
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClienteNotFound.class))),
+                    @ApiResponse(responseCode = "403", description = "Usuário sem permissão para acessar este recurso.",
+                            content = @Content(mediaType = "application/json", schema = @Schema (implementation = ErrorMessage.class)))
             })
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping()
     public ResponseEntity<Void> deletarCliente(@RequestBody @Valid StringCliente stringCliente){
         clienteService.deletarCliente(stringCliente.email());

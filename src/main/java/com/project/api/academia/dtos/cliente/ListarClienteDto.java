@@ -4,8 +4,11 @@ package com.project.api.academia.dtos.cliente;
 import com.project.api.academia.model.Cliente;
 import com.project.api.academia.model.Endereco;
 import java.time.LocalDate;
+import java.util.UUID;
 
 public record ListarClienteDto(
+
+        UUID id,
         String nomeCompleto,
         String email,
         String telefone,
@@ -19,6 +22,7 @@ public record ListarClienteDto(
 ) {
     public ListarClienteDto(Cliente cliente) {
         this(
+                cliente.getId(),
                 cliente.getNomeCompleto(),
                 cliente.getEmail(),
                 cliente.getTelefone(),

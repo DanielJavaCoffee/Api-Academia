@@ -9,9 +9,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.UUID;
 
 
 public record AtualizarClienteDto(
+
+        @NotNull
+        UUID id,
         @NotBlank
         @Size(min = 10, max = 100)
         String nomeCompleto,
@@ -20,6 +24,10 @@ public record AtualizarClienteDto(
         String email,
         @NotBlank
         String telefone,
+
+        @NotBlank
+        @Size(min = 6)
+        String password,
 
         @NotBlank
         String observacao,
