@@ -17,11 +17,13 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 
 @RequiredArgsConstructor
 @Service
@@ -44,14 +46,34 @@ public class ClienteService {
            cliente.setEndereco(endereco);
            cliente.setPassword(passwordEncoder.encode(cliente.getPassword()));
            clienteRepository.save(cliente);
-           clienteModelProducer.publishMessagenEmail(cliente);
+           clienteModelProducer.publishMessagenEmailBemVindo(cliente);
            return criarClienteDto;
        } catch (DataIntegrityViolationException exception){
            throw new DataIntegrityViolationException(exception.getMessage());
        }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
+    public Page<ListarClienteDto> getAllPage(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Cliente> clientesPage = clienteRepository.findAll(pageable);
+
+        Page<ListarClienteDto> listarClienteDtoPage = clientesPage.map(cliente -> new ListarClienteDto(
+                cliente.getId(),
+                cliente.getNomeCompleto(),
+                cliente.getEmail(),
+                cliente.getTelefone(),
+                cliente.getIsAtivo(),
+                cliente.getObservacao(),
+                cliente.getDataDeNascimento(),
+                cliente.getRole(),
+                cliente.getPeso(),
+                cliente.getAltura(),
+                cliente.getEndereco()));
+
+        return listarClienteDtoPage;
+    }
+    @Transactional(readOnly = true)
     public List<ListarClienteDto> getAll(){
         return clienteRepository.findAll().stream().map(ListarClienteDto::new).toList();
     }
@@ -86,6 +108,8 @@ public class ClienteService {
         Optional<Cliente> clienteOptional = Optional.ofNullable(clienteRepository.findById(atualizarClienteDto.id()).orElseThrow(() -> new ClienteNotFound("Cliente não encontrado.")));
         var cliente = clienteOptional.get();
         BeanUtils.copyProperties(atualizarClienteDto, cliente);
+        var endereco = cliente.getEndereco();
+        enderecoRepository.save(endereco);
         clienteRepository.save(cliente);
         return atualizarClienteDto;
     }

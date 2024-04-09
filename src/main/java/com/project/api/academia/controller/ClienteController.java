@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -58,8 +59,9 @@ public class ClienteController {
     )
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<ListarClienteDto>> listarClientes(){
-        return ResponseEntity.status(HttpStatus.OK).body(clienteService.getAll());
+    public ResponseEntity<org.springframework.data.domain.Page>getAllClientes(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        Page<ListarClienteDto> clientesPage = clienteService.getAllPage(page, size);
+        return ResponseEntity.ok(clientesPage);
     }
 
     @Operation(summary = "Buscar Cliente por id.", description = "Recurso para busca de cliente por id.",

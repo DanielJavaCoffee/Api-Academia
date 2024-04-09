@@ -32,4 +32,10 @@ public class Endereco implements Serializable {
     @Column(nullable = false)
     private String cidade;
 
+    public Endereco(String logradouro, String numero, String bairro, String cidade) {
+        this.logradouro = logradouro;
+        this.numero = numero;
+        this.bairro = bairro;
+        this.cidade = cidade;
+    }
 }

@@ -77,7 +77,6 @@ public class Cliente implements Serializable {
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
     private Endereco endereco;
 
-
     public enum Role {
         ROLE_ADMIN,
         ROLE_CLIENTE

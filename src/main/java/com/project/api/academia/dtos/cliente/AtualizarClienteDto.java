@@ -3,6 +3,7 @@ package com.project.api.academia.dtos.cliente;
 
 import com.project.api.academia.model.Cliente;
 
+import com.project.api.academia.model.Endereco;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -42,6 +43,9 @@ public record AtualizarClienteDto(
         Double peso,
 
         @NotNull
-        Double altura
+        Double altura,
+
+        @NotNull
+        Endereco endereco
 ){
 }

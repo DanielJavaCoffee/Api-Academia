@@ -1,0 +1,36 @@
+-- Insere dados na tabela CLIENTES
+INSERT INTO CLIENTES (
+    id,
+    nome_completo,
+    email,
+    telefone,
+    password,
+    observacao,
+    data_de_nascimento,
+    is_ativo,
+    peso,
+    altura,
+    role,
+    data_criacao,
+    data_modificacao,
+    criado_por,
+    modificado_por,
+    endereco_id
+) VALUES (
+    '550e8400-e29f-41d4-a716-446655440001',
+    'Nome Completo do Cliente',
+    'danielsilva12@gmail.com',
+    '123456789',
+    'senha_hash',
+    'Observação do Cliente',
+    '1990-01-01',
+    TRUE,
+    70.5,
+    1.75,
+    'ROLE_CLIENTE',
+    CURRENT_TIMESTAMP,
+    CURRENT_TIMESTAMP,
+    'administrador',
+    'administrador',
+    '550e8200-e29b-41d4-a716-446655440056'
+);

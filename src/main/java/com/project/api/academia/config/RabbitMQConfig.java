@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String EXCG_NAME = "EXCG.direct";
+    public static final String EXCG_NAME = "excg.direct";
     public static final String QUEU_NAME_EMAIL_LOG = "email.log";
     public static final String RK_EMAIL_LOG = "email.log";
 
