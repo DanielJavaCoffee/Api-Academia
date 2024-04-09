@@ -63,11 +63,34 @@ As seguintes dependências foram utilizadas neste projeto:
 1. Certifique-se de ter o RabbitMQ instalado e em execução localmente ou em um servidor acessível.
 2. Execute o microserviço de envio de e-mail e configure-o para se comunicar com o RabbitMQ.
 
+## Configuração do RabbitMQ com Docker
+
+Para configurar o RabbitMQ utilizando Docker, você pode seguir os passos abaixo:
+
+1. Crie um arquivo `docker-compose.yml` na raiz do seu projeto e adicione o seguinte conteúdo:
+
+```yaml
+version: "3.2"
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - /caminho/para/sua/pasta/data/:/var/lib/rabbitmq/
+      - /caminho/para/sua/pasta/log/:/var/log/rabbitmq/
+    networks:
+      - rabbitmq_curso
+
+networks:
+  rabbitmq_curso:
+    driver: bridge
+```
+
 ## Contribuição
 Contribuições são bem-vindas! Se você deseja contribuir com melhorias para este projeto, sinta-se à vontade para abrir um pull request.
 
 ## Licença
 Este projeto está licenciado sob a [MIT License](https://opensource.org/licenses/MIT).
-
-yobf rnwl mepd jxoi
-projeto2021ifpb@gmail.com
