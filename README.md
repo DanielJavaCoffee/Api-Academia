@@ -18,7 +18,7 @@ A Api-Academia é um sistema de backend desenvolvido em Java usando o framework 
 O Microserviço de Envio de E-mail é uma parte integrante da Api-Academia. Ele é responsável por enviar e-mails para os clientes sempre que um novo cliente é cadastrado na academia. Este microserviço foi desenvolvido para fornecer uma comunicação imediata com os novos clientes, proporcionando uma experiência personalizada desde o início.
 
 Você pode encontrar mais informações sobre o Microserviço de Envio de E-mail no seguinte repositório:
-[Repositório do Microserviço de Envio de E-mail](https://github.com/seu-usuario/ms-email)
+[Repositório do Microserviço de Envio de E-mail](https://github.com/DanielJavaCoffee/Api-Academia-ms-Email)
 
 ![Imagem do Microserviço de Envio de E-mail](src/main/resources/static/rabbit.png)
 
